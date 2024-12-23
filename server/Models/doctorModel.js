@@ -12,17 +12,7 @@ const doctorSchema = new mongoose.Schema({
   field: {
     type: String,
     required: true,
-  },
-  meetings: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "Schedule",
-    default: [],
-  },
-  patients: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "Patient",
-    default: [],
-  },
+  }
 });
 
 module.exports = mongoose.model("Doctor", doctorSchema);

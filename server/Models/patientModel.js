@@ -24,16 +24,6 @@ const patientSchema = new mongoose.Schema({
       },
     },
   ],
-  meetings: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "Schedule",
-    default: [],
-  },
-  doctors: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "Doctor",
-    default: [],
-  },
 });
 
 module.exports = mongoose.model("Patient", patientSchema);
