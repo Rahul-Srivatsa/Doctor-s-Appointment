@@ -1,15 +1,9 @@
 const DoctorModel = require("../Models/doctorModel");
 const PatientModel = require("../Models/patientModel");
-const ScheduleModel = require("../Models/scheduleModel");
+const MeetingModel = require("../Models/meetingModel");
 const { displayError } = require("../Middlewares/dispalyError");
 const DoctorWorkingHours = ["9:00", "17:00"];
 
-//free slots
-//seeing patients
-//diagnosis
-//prescription
-
-// 10 1030
 const putMeeting = async (req, res, next) => {
   try {
     const { doctorId, patientId } = req.params;
@@ -23,15 +17,14 @@ const putMeeting = async (req, res, next) => {
     if (!patient) {
       return next(displayError(400, "Patient ID is not valid"));
     }
-    const meet = new ScheduleModel({
+    const meet = new MeetingModel({
       doctorId,
       patientId,
       startTime,
       endTime,
       Link,
     });
-    doctor.meetings.push(meet);
-    patient.meetings.push(meet);
+    await meet.save();
     return res
       .status(201)
       .json({ message: "Meeting added successfully", doctor, patient });
@@ -43,11 +36,11 @@ const putMeeting = async (req, res, next) => {
 const findFreeSlots = async (req, res, next) => {
   try {
     const { doctorId } = req.params;
-    const doctor = await DoctorModel.findById(doctorId);
-    if (!doctor) {
+    const meetings = await MeetingModel.find({ doctorId });
+    if (!meetings) {
       return next(displayError(400, "Doctor ID is not valid"));
     }
-    doctor.meetings.sort(
+    meetings.sort(
       (a, b) => new Date(a.startTime) - new Date(b.startTime)
     );
 
@@ -60,7 +53,7 @@ const findFreeSlots = async (req, res, next) => {
     let freeSlots = [];
     let currentTime = new Date(workingStart);
 
-    for (let meeting of doctor.meetings) {
+    for (let meeting of meetings) {
       const meetingStart = new Date(meeting.startTime);
       const meetingEnd = new Date(meeting.EndTime);
 

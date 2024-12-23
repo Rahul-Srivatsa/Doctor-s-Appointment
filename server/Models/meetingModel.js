@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const schduleSchema = new mongoose.Schema({
+const meetingSchema = new mongoose.Schema({
   doctorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Doctor",
@@ -27,4 +27,4 @@ const schduleSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Schdule", schduleSchema);
+module.exports = mongoose.model("Meeting", meetingSchema);
