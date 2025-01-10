@@ -24,7 +24,7 @@ const putMeeting = async (req, res, next) => {
       endTime,
       Link,
     });
-    await meet.save();
+    const createdMeeting = await meet.save();
     return res
       .status(201)
       .json({ message: "Meeting added successfully", doctor, patient });

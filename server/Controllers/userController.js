@@ -14,11 +14,12 @@ const userRegister = async (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
-    const createdUser = User.create({
+    const user = new User({
       email,
       password: hashedPassword,
       name,
     });
+    const createdUser = await user.save();
 
     const token = jwt.sign(
       { id: createdUser._id, role: createdUser.role },

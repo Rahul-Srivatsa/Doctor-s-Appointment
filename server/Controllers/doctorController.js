@@ -1,4 +1,3 @@
-const DoctorModel = require("../Models/doctorModel");
 const MeetingModel = require("../Models/meetingModel");
 const PatientModel = require("../Models/patientModel");
 const { displayError } = require("../Middlewares/dispalyError");
