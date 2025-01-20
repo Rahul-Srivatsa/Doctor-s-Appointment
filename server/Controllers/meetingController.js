@@ -40,9 +40,7 @@ const findFreeSlots = async (req, res, next) => {
     if (!meetings) {
       return next(displayError(400, "Doctor ID is not valid"));
     }
-    meetings.sort(
-      (a, b) => new Date(a.startTime) - new Date(b.startTime)
-    );
+    meetings.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
 
     const workingStart = new Date();
     workingStart.setHours(9, 0, 0, 0);
@@ -81,4 +79,35 @@ const findFreeSlots = async (req, res, next) => {
   }
 };
 
-module.exports = { putMeeting, findFreeSlots };
+const getMeetingsByDoctorId = async (req, res, next) => {
+  try {
+    const { doctorId } = req.params;
+    const meetings = await MeetingModel.find({ doctorId });
+    if (!meetings) {
+      return next(displayError(400, "No meetings found"));
+    }
+    return res.status(200).json({ meetings });
+  } catch (error) {
+    next(displayError(500, error.message));
+  }
+};
+
+const getMeetingsByPatientId = async (req, res, next) => {
+  try {
+    const { patientId } = req.params;
+    const meetings = await MeetingModel.find({ patientId });
+    if (!meetings) {
+      return next(displayError(400, "No meetings found"));
+    }
+    return res.status(200).json({ meetings });
+  } catch (error) {
+    next(displayError(500, error.message));
+  }
+};
+
+module.exports = {
+  putMeeting,
+  findFreeSlots,
+  getMeetingsByDoctorId,
+  getMeetingsByPatientId,
+};

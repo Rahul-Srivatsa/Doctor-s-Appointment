@@ -38,21 +38,7 @@ const putHistory = async (req, res, next) => {
   }
 };
 
-const getMeetingsByPatientId = async (req, res, next) => {
-  try {
-    const { patientId } = req.params;
-    const meetings = await MeetingModel.find({ patientId });
-    if (!meetings) {
-      return next(displayError(400, "No meetings found"));
-    }
-    return res.status(200).json({ meetings });
-  } catch (error) {
-    next(displayError(500, error.message));
-  }
-};
-
 module.exports = {
   getAllDoctors,
   putHistory,
-  getMeetingsByPatientId,
 };

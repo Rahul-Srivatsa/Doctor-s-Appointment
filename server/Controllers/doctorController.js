@@ -20,17 +20,4 @@ const getAllPatients = async (req, res, next) => {
   }
 };
 
-const getMeetingsByDoctorId = async (req, res, next) => {
-  try {
-    const { doctorId } = req.params;
-    const meetings = await MeetingModel.find({ doctorId });
-    if (!meetings) {
-      return next(displayError(400, "No meetings found"));
-    }
-    return res.status(200).json({ meetings });
-  } catch (error) {
-    next(displayError(500, error.message));
-  }
-};
-
-module.exports = { getAllPatients, getMeetingsByDoctorId };
+module.exports = { getAllPatients };
