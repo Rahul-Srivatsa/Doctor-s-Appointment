@@ -1,6 +1,6 @@
 const express = require("express");
-const { verifyToken } = require("../Middlewares/verifyToken");
-const { verifyRole } = require("../Middlewares/verifyRole");
+const verifyToken = require("../Middlewares/verifyToken");
+const verifyRole = require("../Middlewares/verifyRole");
 
 const {
   putMeeting,

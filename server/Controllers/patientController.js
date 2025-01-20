@@ -1,6 +1,6 @@
 const PatientModel = require("../Models/patientModel");
 const MeetingModel = require("../Models/meetingModel");
-const { displayError } = require("../Middlewares/dispalyError");
+const displayError = require("../Middlewares/displayError");
 
 const getAllDoctors = async (req, res, next) => {
   try {

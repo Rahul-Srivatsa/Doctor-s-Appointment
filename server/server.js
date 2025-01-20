@@ -9,6 +9,8 @@ const patientRoute = require("./Routes/patientRoute");
 const doctorRoute = require("./Routes/doctorRoute");
 const meetingRoute = require("./Routes/meetingRoute");
 
+const errorHandler = require("./Middlewares/errorHandler");
+
 const app = express();
 
 app.use(cors);
@@ -19,6 +21,8 @@ app.use("/api/user/", userRoute);
 app.use("/api/patient/", patientRoute);
 app.use("/api/doctor/", doctorRoute);
 app.use("/api/meeting/", meetingRoute);
+
+app.use(errorHandler);
 
 connectDB();
 

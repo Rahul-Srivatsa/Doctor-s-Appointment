@@ -1,4 +1,4 @@
-const displayError = require("./dispalyError");
+const displayError = require("./displayError");
 
 const verifyRole =
   (...roles) =>

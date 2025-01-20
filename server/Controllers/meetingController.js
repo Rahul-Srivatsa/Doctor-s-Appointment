@@ -1,7 +1,7 @@
 const DoctorModel = require("../Models/doctorModel");
 const PatientModel = require("../Models/patientModel");
 const MeetingModel = require("../Models/meetingModel");
-const { displayError } = require("../Middlewares/dispalyError");
+const displayError = require("../Middlewares/displayError");
 const DoctorWorkingHours = ["9:00", "17:00"];
 
 const putMeeting = async (req, res, next) => {

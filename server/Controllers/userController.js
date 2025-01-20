@@ -1,5 +1,5 @@
 const User = require("../Models/userModel");
-const displayError = require("../Middlewares/dispalyError");
+const displayError = require("../Middlewares/displayError");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -24,7 +24,7 @@ const userRegister = async (req, res, next) => {
     const token = jwt.sign(
       { id: createdUser._id, role: createdUser.role },
       process.env.JWT,
-      { expiresIn: "5h" }
+      { expiresIn: "10h" }
     );
 
     return res.status(201).json({ token });

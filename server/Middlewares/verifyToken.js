@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const displayError = require("./displayError.js");
+const displayError = require("./displayError");
 
 const verifyToken = async (req, res, next) => {
   try {
