@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const patientSchema = new mongoose.Schema({
   id: {
-    type: [mongoose.Schema.Types.ObjectId],
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
   history: [

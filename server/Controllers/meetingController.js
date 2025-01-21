@@ -2,18 +2,20 @@ const DoctorModel = require("../Models/doctorModel");
 const PatientModel = require("../Models/patientModel");
 const MeetingModel = require("../Models/meetingModel");
 const displayError = require("../Middlewares/displayError");
+const mongoose = require("mongoose");
 const DoctorWorkingHours = ["9:00", "17:00"];
 
 const putMeeting = async (req, res, next) => {
   try {
-    const { doctorId, patientId } = req.params;
-    const { startTime, endTime, Link } = req.body;
+    // const { doctorId, patientId } = req.params;
+    const { doctorId, patientId,startTime, endTime, Link } = req.body;
 
-    const doctor = await DoctorModel.findById(doctorId);
+    const doctor = await DoctorModel.findById(new mongoose.Types.ObjectId(doctorId));
+    console.log(doctor);
     if (!doctor) {
       return next(displayError(400, "Doctor ID is not valid"));
     }
-    const patient = await PatientModel.findById(doctorId);
+    const patient = await PatientModel.findById(new mongoose.Types.ObjectId(patientId));
     if (!patient) {
       return next(displayError(400, "Patient ID is not valid"));
     }

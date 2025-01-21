@@ -1,13 +1,14 @@
 const MeetingModel = require("../Models/meetingModel");
 const PatientModel = require("../Models/patientModel");
 const displayError = require("../Middlewares/displayError");
+const mongoose = require("mongoose");
 
 const getAllPatients = async (req, res, next) => {
   try {
     const { doctorId } = req.params;
-    const meetings = await MeetingModel.findById({ doctorId });
+    const meetings = await MeetingModel.findById(new mongoose.Types.ObjectId(doctorId));
     if (!meetings) {
-      return next(displayError(400, "No meetings found"));
+      return next(displayError(400, "No patients found"));
     }
     const patients = [];
     for (let i = 0; i < meetings.length; i++) {

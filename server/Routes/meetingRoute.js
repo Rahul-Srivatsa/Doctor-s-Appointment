@@ -11,7 +11,7 @@ const {
 
 const router = express.Router();
 
-router.put("/", verifyToken, verifyRole("patient"), putMeeting);
+router.post("/", verifyToken, verifyRole("patient"), putMeeting);
 router.get("/findFreeSlots", verifyToken, verifyRole("doctor"), findFreeSlots);
 router.get(
   "/getMeetingsByDoctorId/:doctorId",
