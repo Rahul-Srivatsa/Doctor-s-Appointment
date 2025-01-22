@@ -4,6 +4,7 @@ const patientSchema = new mongoose.Schema({
   id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required: true,
   },
   history: [
     {

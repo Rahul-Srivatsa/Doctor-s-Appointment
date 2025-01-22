@@ -3,10 +3,25 @@ const MeetingModel = require("../Models/meetingModel");
 const displayError = require("../Middlewares/displayError");
 const mongoose = require("mongoose");
 
+const patientRegister = async (req, res, next) => {
+  try {
+    const { patientId } = req.params;
+    const patient = new PatientModel({
+      _id: patientId,
+      history: [],
+    });
+    await patient.save();
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getAllDoctors = async (req, res, next) => {
   try {
     const { patientId } = req.params;
-    const meetings = await MeetingModel.findById(new mongoose.Types.ObjectId(patientId));
+    const meetings = await MeetingModel.findById(
+      new mongoose.Types.ObjectId(patientId)
+    );
     if (!meetings) {
       return next(displayError(400, "No doctors found"));
     }
@@ -42,4 +57,5 @@ const putHistory = async (req, res, next) => {
 module.exports = {
   getAllDoctors,
   putHistory,
+  patientRegister,
 };
