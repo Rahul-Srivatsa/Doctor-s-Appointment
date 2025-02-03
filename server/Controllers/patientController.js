@@ -6,11 +6,13 @@ const mongoose = require("mongoose");
 const patientRegister = async (req, res, next) => {
   try {
     const { patientId } = req.params;
+    const { history } = req.body;
     const patient = new PatientModel({
-      _id: patientId,
-      history: [],
+      _id: new mongoose.Types.ObjectId(patientId),
+      history: history || [],
     });
     await patient.save();
+    return res.status(201).json({ message: "Patient registered successfully" });
   } catch (error) {
     next(error);
   }
@@ -46,6 +48,7 @@ const putHistory = async (req, res, next) => {
     }
     const history = { diagnosis, symptoms, prescription, solved };
     patient.history.push(history);
+    await patient.save();
     return res
       .status(201)
       .json({ message: "History added successfully", patient });
