@@ -6,11 +6,12 @@ const displayError = require("../Middlewares/displayError");
 const doctorRegister = async (req, res, next) => {
   try {
     const { doctorId } = req.params;
-    const { experience, field, certificate } = req.body; 
+    const { experience, field, workingHours, certificate } = req.body; 
     const doctor = new DoctorModel({
       _id: doctorId,
       experience,
       field,
+      workingHours,
       certificate,
     });
     await doctor.save();

@@ -3,7 +3,6 @@ const PatientModel = require("../Models/patientModel");
 const MeetingModel = require("../Models/meetingModel");
 const displayError = require("../Middlewares/displayError");
 const mongoose = require("mongoose");
-const DoctorWorkingHours = ["9:00", "17:00"];
 
 const putMeeting = async (req, res, next) => {
   try {
@@ -34,11 +33,6 @@ const putMeeting = async (req, res, next) => {
 
     const workingEnd = new Date(start);
     workingEnd.setHours(17, 0, 0, 0);
-
-    // console.log("Start Time:", start.toLocaleString());
-    // console.log("End Time:", end.toLocaleString());
-    // console.log("Working Start:", workingStart.toLocaleString());
-    // console.log("Working End:", workingEnd.toLocaleString());
 
     if (start < workingStart || end > workingEnd) {
       return next(
@@ -73,46 +67,27 @@ const putMeeting = async (req, res, next) => {
 
 const findFreeSlots = async (req, res, next) => {
   try {
-    const { doctorId } = req.params;
+    const { doctorId } = req.body;
+    const doctor = await DoctorModel.findById(new mongoose.Types.ObjectId(doctorId));
+    if (!doctor) {
+      return next(displayError(400, "Doctor ID is not valid"));
+    }
     const meetings = await MeetingModel.find({ doctorId });
     if (!meetings) {
       return next(displayError(400, "Doctor ID is not valid"));
     }
-    console.log(meetings[0].startTime.toLocaleString());
-    console.log(meetings[0].endTime.toLocaleString());
-    meetings.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
-
-    const workingStart = new Date();
-    workingStart.setHours(9, 0, 0, 0);
-
-    const workingEnd = new Date();
-    workingEnd.setHours(17, 0, 0, 0);
-
-    let freeSlots = [];
-    let currentTime = new Date(workingStart);
-
-    for (let meeting of meetings) {
-      const meetingStart = new Date(meeting.startTime);
-      const meetingEnd = new Date(meeting.EndTime);
-
-      if (currentTime < meetingStart) {
-        freeSlots.push({
-          startTime: currentTime.toLocaleString(),
-          endTime: meetingStart.toLocaleString(),
-        });
-      }
-      if (currentTime < meetingEnd) {
-        currentTime = meetingEnd;
+    const workingHours = doctor.workingHours;
+    const freeSlots = [];
+    
+    for (let timeSlot of workingHours) {
+      // Check if the timeSlot is not in meetings
+      if (!meetings.some(meeting => 
+          meeting.startTime.getTime() === timeSlot.startTime.getTime() &&
+          meeting.endTime.getTime() === timeSlot.endTime.getTime())) {
+        freeSlots.push(timeSlot);
       }
     }
-
-    if (currentTime < workingEnd) {
-      freeSlots.push({
-        startTime: currentTime.toLocaleString(),
-        endTime: workingEnd.toLocaleString(),
-      });
-    }
-
+    
     res.status(200).json({ freeSlots });
   } catch (error) {
     next(displayError(500, error.message));

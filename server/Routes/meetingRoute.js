@@ -13,9 +13,9 @@ const router = express.Router();
 
 router.post("/:patientId", verifyToken, verifyRole("patient"), putMeeting);
 router.get(
-  "/findFreeSlots/:doctorId",
+  "/findFreeSlots",
   verifyToken,
-  verifyRole("doctor"),
+  verifyRole("patient"),
   findFreeSlots
 );
 router.get(

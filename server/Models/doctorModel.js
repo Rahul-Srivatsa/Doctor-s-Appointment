@@ -14,6 +14,18 @@ const doctorSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  workingHours: [
+    {
+      startTime: {
+        type: Date,
+        required: true,
+      },
+      endTime: {
+        type: Date,
+        required: true,
+      },
+    }
+  ],
   certificate: {
     type: String,
     required: true,
