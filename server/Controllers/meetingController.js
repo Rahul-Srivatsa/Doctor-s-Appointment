@@ -7,24 +7,61 @@ const DoctorWorkingHours = ["9:00", "17:00"];
 
 const putMeeting = async (req, res, next) => {
   try {
-    // const { doctorId, patientId } = req.params;
-    const { doctorId, patientId,startTime, endTime, link } = req.body;
+    const { patientId } = req.params;
+    const { doctorId, startTime, endTime, link } = req.body;
 
-    const doctor = await DoctorModel.findById(new mongoose.Types.ObjectId(doctorId));
+    const doctor = await DoctorModel.findById(
+      new mongoose.Types.ObjectId(doctorId)
+    );
     if (!doctor) {
       return next(displayError(400, "Doctor ID is not valid"));
     }
-    const patient = await PatientModel.findById(new mongoose.Types.ObjectId(patientId));
+
+    const patient = await PatientModel.findById(
+      new mongoose.Types.ObjectId(patientId)
+    );
     if (!patient) {
       return next(displayError(400, "Patient ID is not valid"));
     }
+
+    // Convert input times to Date objects
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+
+    // Set working hours range for the same date
+    const workingStart = new Date(start);
+    workingStart.setHours(9, 0, 0, 0);
+
+    const workingEnd = new Date(start);
+    workingEnd.setHours(17, 0, 0, 0);
+
+    // console.log("Start Time:", start.toLocaleString());
+    // console.log("End Time:", end.toLocaleString());
+    // console.log("Working Start:", workingStart.toLocaleString());
+    // console.log("Working End:", workingEnd.toLocaleString());
+
+    if (start < workingStart || end > workingEnd) {
+      return next(
+        displayError(400, "Meeting time is not within working hours")
+      );
+    }
+    const diffMs = end.getTime() - start.getTime(); // Difference in milliseconds
+    const diffMinutes = diffMs / (1000 * 60); // Convert to minutes
+
+    if (diffMinutes !== 60) {
+      return next(
+        displayError(400, "Meeting time must be exactly 1 hour long")
+      );
+    }
+
     const meet = new MeetingModel({
       doctorId,
       patientId,
-      startTime,
-      endTime,
+      startTime: start,
+      endTime: end,
       link,
     });
+
     const createdMeeting = await meet.save();
     return res
       .status(201)
