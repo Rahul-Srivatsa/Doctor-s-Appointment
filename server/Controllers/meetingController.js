@@ -8,10 +8,9 @@ const DoctorWorkingHours = ["9:00", "17:00"];
 const putMeeting = async (req, res, next) => {
   try {
     // const { doctorId, patientId } = req.params;
-    const { doctorId, patientId,startTime, endTime, Link } = req.body;
+    const { doctorId, patientId,startTime, endTime, link } = req.body;
 
     const doctor = await DoctorModel.findById(new mongoose.Types.ObjectId(doctorId));
-    console.log(doctor);
     if (!doctor) {
       return next(displayError(400, "Doctor ID is not valid"));
     }
@@ -24,7 +23,7 @@ const putMeeting = async (req, res, next) => {
       patientId,
       startTime,
       endTime,
-      Link,
+      link,
     });
     const createdMeeting = await meet.save();
     return res
@@ -42,6 +41,8 @@ const findFreeSlots = async (req, res, next) => {
     if (!meetings) {
       return next(displayError(400, "Doctor ID is not valid"));
     }
+    console.log(meetings[0].startTime.toLocaleString());
+    console.log(meetings[0].endTime.toLocaleString());
     meetings.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
 
     const workingStart = new Date();
@@ -59,8 +60,8 @@ const findFreeSlots = async (req, res, next) => {
 
       if (currentTime < meetingStart) {
         freeSlots.push({
-          startTime: new Date(currentTime),
-          endTime: new Date(meetingStart),
+          startTime: currentTime.toLocaleString(),
+          endTime: meetingStart.toLocaleString(),
         });
       }
       if (currentTime < meetingEnd) {
@@ -70,8 +71,8 @@ const findFreeSlots = async (req, res, next) => {
 
     if (currentTime < workingEnd) {
       freeSlots.push({
-        startTime: new Date(currentTime),
-        endTime: new Date(workingEnd),
+        startTime: currentTime.toLocaleString(),
+        endTime: workingEnd.toLocaleString(),
       });
     }
 

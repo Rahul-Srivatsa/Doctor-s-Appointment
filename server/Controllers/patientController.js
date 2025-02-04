@@ -1,14 +1,14 @@
 const PatientModel = require("../Models/patientModel");
 const MeetingModel = require("../Models/meetingModel");
+const DoctorModel = require("../Models/doctorModel");
 const displayError = require("../Middlewares/displayError");
-const mongoose = require("mongoose");
 
 const patientRegister = async (req, res, next) => {
   try {
     const { patientId } = req.params;
     const { history } = req.body;
     const patient = new PatientModel({
-      _id: new mongoose.Types.ObjectId(patientId),
+      _id: patientId,
       history: history || [],
     });
     await patient.save();
@@ -21,17 +21,12 @@ const patientRegister = async (req, res, next) => {
 const getAllDoctors = async (req, res, next) => {
   try {
     const { patientId } = req.params;
-    const meetings = await MeetingModel.findById(
-      new mongoose.Types.ObjectId(patientId)
-    );
+    const meetings = await MeetingModel.find({patientId});
     if (!meetings) {
       return next(displayError(400, "No doctors found"));
     }
-    const doctors = [];
-    for (let i = 0; i < meetings.length; i++) {
-      const doctor = await DoctorModel.findById(meetings[i].doctorId);
-      doctors.push(doctor);
-    }
+    const doctorIds = meetings.map((meeting) => meeting.doctorId);
+    const doctors = await DoctorModel.find({ _id: { $in: doctorIds } });
     return res.status(200).json({ doctors });
   } catch (error) {
     next(displayError(500, error.message));

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const doctorSchema = new mongoose.Schema({
-  id: {
+  _id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
